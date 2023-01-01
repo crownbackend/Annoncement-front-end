@@ -1,30 +1,21 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <HeaderView/>
+  <div class="container">
+    <router-view/>
+  </div>
+
 </template>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+$primary: #0B3C5D;
+$secondary: #F7941E;
+$success: #5DBCD2;
+$info: #828282;
 
-nav {
-  padding: 30px;
+// Then import Bootstrap
+@import "../node_modules/bootstrap/scss/bootstrap";
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
 </style>
+<script setup lang="ts">
+import HeaderView from "@/views/Header.vue";
+</script>

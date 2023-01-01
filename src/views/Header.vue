@@ -22,13 +22,16 @@
                 <li><a class="dropdown-item" href="#">Action</a></li>
                 <li><a class="dropdown-item" href="#">Another action</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                <li><a class="dropdown-item" v-if="user" @click="logOut" href="#">Déconnexion</a></li>
               </ul>
             </li>
-          </ul>
-          <div class="col-md-3 text-end">
+          </ul>{{user}}
+          <div class="col-md-3 text-end"  v-if="!user" >
             <router-link to="/connexion" class="btn btn-outline-success me-2 ">Connexion</router-link>
             <button type="button" class="btn btn-success">Inscription</button>
+          </div>
+          <div class="col-md-3 text-end" v-if="user" >
+            <button type="button" class="btn btn-success"><i class="bi bi-person-circle"></i>{{email}}</button>
           </div>
         </div>
       </div>
@@ -38,9 +41,23 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import AuthService from "@/service/AuthService";
+
 
 export default defineComponent({
   name: 'HeaderView',
+  data() {
+    return {
+      user : AuthService.getUser(),
+      email: AuthService.getInfosUser()
+    }
+  },
+  methods: {
+    logOut() {
+      AuthService.logOut();
+      this.$router.push('/connexion')
+    }
+  }
 });
 </script>
 

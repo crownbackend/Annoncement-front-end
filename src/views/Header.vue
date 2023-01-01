@@ -2,7 +2,7 @@
   <div class="container">
     <nav class="navbar navbar-expand-lg bg-primary">
       <div class="container-fluid">
-        <a class="navbar-brand text-bg-primary" href="#">LeBonPoint</a>
+        <router-link class="navbar-brand text-bg-primary" to="/">LeBonPoint</router-link>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -27,7 +27,7 @@
             </li>
           </ul>
           <div class="col-md-3 text-end">
-            <button type="button" class="btn btn-outline-success me-2 ">Connexion</button>
+            <router-link to="/connexion" class="btn btn-outline-success me-2 ">Connexion</router-link>
             <button type="button" class="btn btn-success">Inscription</button>
           </div>
         </div>
@@ -43,3 +43,7 @@ export default defineComponent({
   name: 'HeaderView',
 });
 </script>
+
+<style lang="scss">
+
+</style>

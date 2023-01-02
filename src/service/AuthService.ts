@@ -1,7 +1,7 @@
 class AuthService {
     getUser() {
         const token = this.getToken();
-        if (!token) {
+        if (Object.keys(token).length === 0) {
             return false;
         }
         return true;

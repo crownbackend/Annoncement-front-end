@@ -1,6 +1,7 @@
 <template>
   <HeaderView  :key="$route.fullPath" />
   <br>
+  <br>
   <div class="container">
     <router-view/>
   </div>

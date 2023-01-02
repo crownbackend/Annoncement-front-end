@@ -25,7 +25,7 @@
                 <li><a class="dropdown-item" v-if="user" @click="logOut" href="#">Déconnexion</a></li>
               </ul>
             </li>
-          </ul>{{user}}
+          </ul>
           <div class="col-md-3 text-end"  v-if="!user" >
             <router-link to="/connexion" class="btn btn-outline-success me-2 ">Connexion</router-link>
             <button type="button" class="btn btn-success">Inscription</button>

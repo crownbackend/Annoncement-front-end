@@ -17,6 +17,9 @@ $info: #828282;
 // Then import Bootstrap
 @import "../node_modules/bootstrap/scss/bootstrap";
 
+.pointer {
+  cursor: pointer;
+}
 </style>
 <script setup lang="ts">
 import HeaderView from "@/views/Header.vue";

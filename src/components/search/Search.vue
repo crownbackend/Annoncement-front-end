@@ -21,11 +21,19 @@
               <div class="col-md-4">
                 <div class="input-group mb-3">
                   <span class="input-group-text" id="basic-addon1"><i class="bi bi-geo-alt"></i></span>
-                  <input type="text" class="form-control" placeholder="Saisissez une région, une ville...">
+                  <input type="text" @keyup="searchPosition" @focus="searchResult" @blur="searchResult" class="form-control" placeholder="Saisissez une région, une ville...">
+                </div>
+                <div v-if="showCitySearch" class="popover bs-popover-auto fade" :class="{show: showCitySearch}">
+                  <div class="popover-header">Location</div>
+                  <div class="popover-body">
+                    <ul class="list-group">
+                      <li class="list-group-item" :key="key" v-for="(city, key) in cites">{{city.name}} ({{city.codePostale}})</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
-            <h4 @click="showPrice"><span class="badge bg-secondary pointer">Prix</span></h4>
+            <span @click="showPrice" class="badge bg-secondary pointer">Prix</span>
             <div class="card" style="width: 15rem;" v-if="showPriceCard">
               <div class="card-body">
                 <h5 class="card-title">Card title</h5>
@@ -50,6 +58,7 @@
 import { defineComponent } from 'vue';
 import CategoryApi from "@/service/CategoryApi";
 import {Category} from "@/model/category";
+import CityApi from "@/service/CityApi";
 
 export default defineComponent({
   name: 'SearchComponent',
@@ -58,6 +67,9 @@ export default defineComponent({
       categories: [],
       countAds: null,
       showPriceCard: false,
+      showCitySearch: false,
+      countCategoriesGlobal: null,
+      cites: []
     }
   },
   created() {
@@ -65,6 +77,7 @@ export default defineComponent({
         .then(response => {
           this.categories = response.data.categories
           this.countAds = response.data.countAds
+          this.countCategoriesGlobal = response.data.countAds
         })
         .catch(() => {
           this.toastShow('error', 'Erreur serveur')
@@ -79,12 +92,32 @@ export default defineComponent({
           this.countAds = v.categories
         }
       })
+      if(valueNumber === 0) {
+        this.countAds = this.countCategoriesGlobal
+      }
     },
     showPrice() {
       if(!this.showPriceCard) {
         this.showPriceCard = true
       } else {
         this.showPriceCard = false
+      }
+    },
+    searchPosition(event: Event) {
+      const value = (event.target as HTMLInputElement).value
+
+      if(value.length >= 1) {
+        CityApi.searchCity(value).then(response => {
+          console.log(response)
+          this.cites = response.data
+        }).catch(err => console.log(err))
+      }
+    },
+    searchResult() {
+      if(!this.showCitySearch) {
+        this.showCitySearch = true
+      } else {
+        this.showCitySearch = false
       }
     },
     toastShow(type: string, message: string) {

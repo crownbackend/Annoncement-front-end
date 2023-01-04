@@ -21,13 +21,13 @@
               <div class="col-md-4">
                 <div class="input-group mb-3">
                   <span class="input-group-text" id="basic-addon1"><i class="bi bi-geo-alt"></i></span>
-                  <input type="text" @keyup="searchPosition" @focus="searchResult" @blur="searchResult" class="form-control" placeholder="Saisissez une région, une ville...">
+                  <input type="text" @keyup="searchPosition" @focus="searchResult" v-model="searchForm.city" class="form-control" placeholder="Saisissez une ville">
                 </div>
                 <div v-if="showCitySearch" class="popover bs-popover-auto fade" :class="{show: showCitySearch}">
                   <div class="popover-header">Location</div>
                   <div class="popover-body">
                     <ul class="list-group">
-                      <li class="list-group-item" :key="key" v-for="(city, key) in cites">{{city.name}} ({{city.codePostale}})</li>
+                      <li class="list-group-item pointer" @click="selectCity(city)" :key="key" v-for="(city, key) in cites">{{city.name}} ({{city.codePostale}})</li>
                     </ul>
                   </div>
                 </div>
@@ -69,7 +69,10 @@ export default defineComponent({
       showPriceCard: false,
       showCitySearch: false,
       countCategoriesGlobal: null,
-      cites: []
+      cites: [],
+      searchForm: {
+        city: ''
+      }
     }
   },
   created() {
@@ -104,8 +107,11 @@ export default defineComponent({
       }
     },
     searchPosition(event: Event) {
-      const value = (event.target as HTMLInputElement).value
+      if(!this.showCitySearch) {
+        this.showCitySearch = true
+      }
 
+      const value = (event.target as HTMLInputElement).value
       if(value.length >= 1) {
         CityApi.searchCity(value).then(response => {
           console.log(response)
@@ -119,6 +125,10 @@ export default defineComponent({
       } else {
         this.showCitySearch = false
       }
+    },
+    selectCity(city: any) {
+      this.searchForm.city = city.name + ' (' + city.codePostale + ')'
+      this.showCitySearch = false
     },
     toastShow(type: string, message: string) {
       this.$toast.default(message, {

@@ -1,6 +1,6 @@
 <template>
   <div class="container h-100">
-    <div class="row h-100 justify-content-center align-items-center" v-if="categories">
+    <div v-if="categories && countAds" class="row h-100 justify-content-center align-items-center">
       <div class="col-10">
         <h3 class="row h-100 justify-content-center align-items-center">Des millions de petites annonces et autant d’occasions de se faire plaisir</h3>
         <div class="card">
@@ -21,7 +21,7 @@
               <div class="col-md-4">
                 <div class="input-group mb-3">
                   <span class="input-group-text" id="basic-addon1"><i class="bi bi-geo-alt"></i></span>
-                  <input type="text" @keyup="searchPosition" @focus="searchResult" v-model="searchForm.city" class="form-control" placeholder="Saisissez une ville">
+                  <input type="text" @keyup="searchPosition" v-model="searchForm.city" class="form-control" placeholder="Saisissez une ville">
                 </div>
                 <div v-if="showCitySearch" class="popover bs-popover-auto fade" :class="{show: showCitySearch}">
                   <div class="popover-header">Location</div>
@@ -33,23 +33,43 @@
                 </div>
               </div>
             </div>
-            <span @click="showPrice" class="badge bg-secondary pointer">Prix</span>
-            <div class="card" style="width: 15rem;" v-if="showPriceCard">
+            <span @click="showPrice" class="badge bg-secondary pointer" style="font-size: 1.3rem">Prix</span>
+            <div class="card" style="width: 30rem;" v-if="showPriceCard">
               <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <h5 class="card-title">Prix</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="min">€</span>
+                      <input type="number" class="form-control" placeholder="Minimum" aria-label="min" aria-describedby="basic-addon1">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="max">€</span>
+                      <input type="number" class="form-control" placeholder="Maximum" aria-label="max" aria-describedby="basic-addon1">
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+            <br>
             <div v-if="countAds" class="d-grid gap-2 col-6 mx-auto row h-100 justify-content-center align-items-center">
               <button class="btn btn-primary" type="button">Rechercher ({{countAds}} résultats)</button>
             </div>
-            <div v-else class="d-grid gap-2 col-6 mx-auto row h-100 justify-content-center align-items-center">
+            <div v-if="!countAds" class="d-grid gap-2 col-6 mx-auto row h-100 justify-content-center align-items-center">
               <h2>Aucune annonce n'est disponible dans cette catégorie.</h2>
             </div>
           </div>
         </div>
       </div>
+    </div>
+    <div v-else class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <br>
+    <div v-if="countAds" class="d-grid gap-2 col-6 mx-auto row h-100 justify-content-center align-items-center">
+      <button class="btn btn-secondary" type="button">Deposé une annonce</button>
     </div>
   </div>
 </template>
@@ -70,6 +90,7 @@ export default defineComponent({
       showCitySearch: false,
       countCategoriesGlobal: null,
       cites: [],
+      price: '',
       searchForm: {
         city: ''
       }
@@ -90,11 +111,6 @@ export default defineComponent({
     selectCategory(event: Event) {
       const value = (event.target as HTMLInputElement).value
       const valueNumber = Number(value)
-      this.categories.forEach((v: Category) => {
-        if(valueNumber === v.id) {
-          this.countAds = v.categories
-        }
-      })
       if(valueNumber === 0) {
         this.countAds = this.countCategoriesGlobal
       }

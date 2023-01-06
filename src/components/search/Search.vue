@@ -1,6 +1,6 @@
 <template>
   <div class="container h-100">
-    <div v-if="categories && countAds" class="row h-100 justify-content-center align-items-center">
+    <div class="row h-100 justify-content-center align-items-center">
       <div class="col-10">
         <h3 class="row h-100 justify-content-center align-items-center">Des millions de petites annonces et autant d’occasions de se faire plaisir</h3>
         <div class="card">
@@ -27,7 +27,7 @@
                   <div class="popover-header">Location</div>
                   <div class="popover-body">
                     <ul class="list-group">
-                      <li class="list-group-item pointer" @click="selectCity(city)" :key="key" v-for="(city, key) in cites">{{city.name}} ({{city.codePostale}})</li>
+                      <li class="list-group-item pointer" @click="selectCity(cityShow)" :key="key" v-for="(cityShow, key) in cites">{{cityShow.name}} ({{cityShow.codePostale}})</li>
                     </ul>
                   </div>
                 </div>
@@ -63,9 +63,6 @@
           </div>
         </div>
       </div>
-    </div>
-    <div v-else class="spinner-border" role="status">
-      <span class="visually-hidden">Loading...</span>
     </div>
     <br>
     <div v-if="countAds" class="d-grid gap-2 col-6 mx-auto row h-100 justify-content-center align-items-center">
@@ -116,12 +113,11 @@ export default defineComponent({
     selectCategory(event: Event) {
       const value = (event.target as HTMLInputElement).value
       const valueNumber = Number(value)
-      console.log(valueNumber)
-      this.searchForm.category = value
-      this.searchAdsCount(this.createFormData(this.searchForm))
       if(valueNumber === 0) {
         this.countAds = this.countCategoriesGlobal
       }
+      this.searchForm.category = value
+      this.searchAdsCount(this.createFormData(this.searchForm))
     },
     showPrice() {
       if(!this.showPriceCard) {
@@ -138,27 +134,20 @@ export default defineComponent({
       const value = (event.target as HTMLInputElement).value
       if(value.length >= 1) {
         CityApi.searchCity(value).then(response => {
-          console.log(response)
           this.cites = response.data
         }).catch(err => console.log(err))
-      }
-    },
-    searchResult() {
-      if(!this.showCitySearch) {
-        this.showCitySearch = true
-      } else {
-        this.showCitySearch = false
       }
     },
     selectCity(city: any) {
       this.cityShow = city.name + ' (' + city.codePostale + ')'
       this.showCitySearch = false
       this.searchForm.city = city.id
+      this.searchAdsCount(this.createFormData(this.searchForm))
     },
     searchAdsCount(data: any) {
       console.log("form search content / ", this.searchForm)
       AdApi.searchAdCount(data).then(response => {
-        console.log(response)
+        this.countAds = response.data
       }).catch(err => console.log(err))
     },
     createFormData(data: any) {

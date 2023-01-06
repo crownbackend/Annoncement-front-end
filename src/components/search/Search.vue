@@ -15,7 +15,7 @@
               <div class="col-md-4">
                 <div class="input-group mb-3">
                   <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
-                  <input type="text" class="form-control" placeholder="Que chercher vous ?">
+                  <input type="text" class="form-control" v-model="searchForm.search" placeholder="Que chercher vous ?">
                 </div>
               </div>
               <div class="col-md-4">
@@ -41,13 +41,13 @@
                   <div class="col-md-6">
                     <div class="input-group mb-3">
                       <span class="input-group-text" id="min">€</span>
-                      <input type="number" class="form-control" placeholder="Minimum" aria-label="min" aria-describedby="basic-addon1">
+                      <input type="number" class="form-control" v-model="searchForm.priceMin" placeholder="Minimum" aria-label="min" aria-describedby="basic-addon1">
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="input-group mb-3">
                       <span class="input-group-text" id="max">€</span>
-                      <input type="number" class="form-control" placeholder="Maximum" aria-label="max" aria-describedby="basic-addon1">
+                      <input type="number" class="form-control" v-model="searchForm.priceMax" placeholder="Maximum" aria-label="max" aria-describedby="basic-addon1">
                     </div>
                   </div>
                 </div>
@@ -77,8 +77,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import CategoryApi from "@/service/CategoryApi";
-import {Category} from "@/model/category";
 import CityApi from "@/service/CityApi";
+import AdApi from "@/service/AdApi";
 
 export default defineComponent({
   name: 'SearchComponent',
@@ -91,8 +91,13 @@ export default defineComponent({
       countCategoriesGlobal: null,
       cites: [],
       price: '',
+      cityShow: '',
       searchForm: {
-        city: ''
+        city: '',
+        category: '',
+        search: '',
+        priceMin: '',
+        priceMax: '',
       }
     }
   },
@@ -111,6 +116,9 @@ export default defineComponent({
     selectCategory(event: Event) {
       const value = (event.target as HTMLInputElement).value
       const valueNumber = Number(value)
+      console.log(valueNumber)
+      this.searchForm.category = value
+      this.searchAdsCount(this.createFormData(this.searchForm))
       if(valueNumber === 0) {
         this.countAds = this.countCategoriesGlobal
       }
@@ -143,8 +151,24 @@ export default defineComponent({
       }
     },
     selectCity(city: any) {
-      this.searchForm.city = city.name + ' (' + city.codePostale + ')'
+      this.cityShow = city.name + ' (' + city.codePostale + ')'
       this.showCitySearch = false
+      this.searchForm.city = city.id
+    },
+    searchAdsCount(data: any) {
+      console.log("form search content / ", this.searchForm)
+      AdApi.searchAdCount(data).then(response => {
+        console.log(response)
+      }).catch(err => console.log(err))
+    },
+    createFormData(data: any) {
+      const formData = new FormData()
+      formData.append('category', data.category)
+      formData.append('city', data.city)
+      formData.append('priceMax', data.priceMax)
+      formData.append('priceMin', data.priceMin)
+      formData.append('search', data.search)
+      return formData
     },
     toastShow(type: string, message: string) {
       this.$toast.default(message, {

@@ -135,7 +135,9 @@ export default defineComponent({
       if(value.length >= 1) {
         CityApi.searchCity(value).then(response => {
           this.cites = response.data
-        }).catch(err => console.log(err))
+        }).catch(() => {
+          this.toastShow('error', 'Erreur serveur')
+        })
       }
     },
     selectCity(city: any) {
@@ -152,7 +154,9 @@ export default defineComponent({
     searchAdsCount(data: any) {
       AdApi.searchAdCount(data).then(response => {
         this.countAds = response.data
-      }).catch(err => console.log(err))
+      }).catch(() => {
+        this.toastShow('error', 'Erreur serveur')
+      })
     },
     createFormData(data: any) {
       const formData = new FormData()

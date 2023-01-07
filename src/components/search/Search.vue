@@ -15,19 +15,19 @@
               <div class="col-md-4">
                 <div class="input-group mb-3">
                   <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
-                  <input type="text" class="form-control" v-model="searchForm.search" placeholder="Que chercher vous ?">
+                  <input type="text" class="form-control" @keyup="searchUser($event)" v-model="searchForm.search" placeholder="Que chercher vous ?">
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="input-group mb-3">
                   <span class="input-group-text" id="basic-addon1"><i class="bi bi-geo-alt"></i></span>
-                  <input type="text" @keyup="searchPosition" v-model="searchForm.city" class="form-control" placeholder="Saisissez une ville">
+                  <input type="text" @keyup="searchPosition" v-model="cityShow" class="form-control" placeholder="Saisissez une ville">
                 </div>
                 <div v-if="showCitySearch" class="popover bs-popover-auto fade" :class="{show: showCitySearch}">
                   <div class="popover-header">Location</div>
                   <div class="popover-body">
                     <ul class="list-group">
-                      <li class="list-group-item pointer" @click="selectCity(cityShow)" :key="key" v-for="(cityShow, key) in cites">{{cityShow.name}} ({{cityShow.codePostale}})</li>
+                      <li class="list-group-item pointer" @click="selectCity(city)" :key="key" v-for="(city, key) in cites">{{city.name}} ({{city.codePostale}})</li>
                     </ul>
                   </div>
                 </div>
@@ -87,8 +87,8 @@ export default defineComponent({
       showCitySearch: false,
       countCategoriesGlobal: null,
       cites: [],
-      price: '',
       cityShow: '',
+      price: '',
       searchForm: {
         city: '',
         category: '',
@@ -139,13 +139,17 @@ export default defineComponent({
       }
     },
     selectCity(city: any) {
-      this.cityShow = city.name + ' (' + city.codePostale + ')'
-      this.showCitySearch = false
       this.searchForm.city = city.id
+      this.showCitySearch = false
+      this.searchAdsCount(this.createFormData(this.searchForm))
+      this.cityShow = city.name + ' (' + city.codePostale + ')'
+    },
+    searchUser(event: Event) {
+      const value = (event.target as HTMLInputElement).value
+      this.searchForm.search = value
       this.searchAdsCount(this.createFormData(this.searchForm))
     },
     searchAdsCount(data: any) {
-      console.log("form search content / ", this.searchForm)
       AdApi.searchAdCount(data).then(response => {
         this.countAds = response.data
       }).catch(err => console.log(err))

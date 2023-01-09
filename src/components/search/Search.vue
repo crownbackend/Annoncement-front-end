@@ -33,21 +33,34 @@
                 </div>
               </div>
             </div>
-            <span @click="showPrice" class="badge bg-secondary pointer" style="font-size: 1.3rem">Prix</span>
+            <span @click="showPrice" v-if="searchForm.priceMin === '' && searchForm.priceMax === ''" class="badge bg-secondary pointer" style="font-size: 1.3rem">
+              Prix
+            </span>
+            <span @click="showPrice" v-else-if="searchForm.priceMin !== '' && searchForm.priceMax !==''" class="badge bg-secondary pointer" style="font-size: 1.3rem">
+                 {{ searchForm.priceMin }} - {{ searchForm.priceMax}} €
+            </span>
+            <span @click="showPrice" v-else-if="searchForm.priceMax" class="badge bg-secondary pointer" style="font-size: 1.3rem">
+               {{ searchForm.priceMax }} € et moins
+            </span>
+            <span @click="showPrice" v-else-if="searchForm.priceMin" class="badge bg-secondary pointer" style="font-size: 1.3rem">
+              {{ searchForm.priceMin }} € et plus
+            </span>
             <div class="card" style="width: 30rem;" v-if="showPriceCard">
               <div class="card-body">
-                <h5 class="card-title">Prix</h5>
+                <h5 class="card-title">
+                  Prix
+                </h5>
                 <div class="row">
                   <div class="col-md-6">
                     <div class="input-group mb-3">
                       <span class="input-group-text" id="min">€</span>
-                      <input type="number" class="form-control" v-model="searchForm.priceMin" placeholder="Minimum" aria-label="min" aria-describedby="basic-addon1">
+                      <input type="number" class="form-control" @keyup="priceMinMax($event)" v-model="searchForm.priceMin" placeholder="Minimum" aria-label="min" aria-describedby="basic-addon1">
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="input-group mb-3">
                       <span class="input-group-text" id="max">€</span>
-                      <input type="number" class="form-control" v-model="searchForm.priceMax" placeholder="Maximum" aria-label="max" aria-describedby="basic-addon1">
+                      <input type="number" class="form-control" @keyup="priceMinMax($event)" v-model="searchForm.priceMax" placeholder="Maximum" aria-label="max" aria-describedby="basic-addon1">
                     </div>
                   </div>
                 </div>
@@ -78,37 +91,6 @@ import CityApi from "@/service/CityApi";
 import AdApi from "@/service/AdApi";
 
 export default defineComponent({
-  name: 'SearchComponent',
-  data() {
-    return {
-      categories: [],
-      countAds: null,
-      showPriceCard: false,
-      showCitySearch: false,
-      countCategoriesGlobal: null,
-      cites: [],
-      cityShow: '',
-      price: '',
-      searchForm: {
-        city: '',
-        category: '',
-        search: '',
-        priceMin: '',
-        priceMax: '',
-      }
-    }
-  },
-  created() {
-    CategoryApi.getCategories()
-        .then(response => {
-          this.categories = response.data.categories
-          this.countAds = response.data.countAds
-          this.countCategoriesGlobal = response.data.countAds
-        })
-        .catch(() => {
-          this.toastShow('error', 'Erreur serveur')
-        })
-  },
   methods: {
     selectCategory(event: Event) {
       const value = (event.target as HTMLInputElement).value
@@ -146,10 +128,17 @@ export default defineComponent({
       this.searchAdsCount(this.createFormData(this.searchForm))
       this.cityShow = city.name + ' (' + city.codePostale + ')'
     },
-    searchUser(event: Event) {
-      const value = (event.target as HTMLInputElement).value
-      this.searchForm.search = value
+    searchUser() {
       this.searchAdsCount(this.createFormData(this.searchForm))
+    },
+    priceMinMax() {
+      if(this.searchForm.priceMin && this.searchForm.priceMax) {
+        this.searchAdsCount(this.createFormData(this.searchForm))
+      } else if(this.searchForm.priceMin) {
+        this.searchAdsCount(this.createFormData(this.searchForm))
+      } else if(this.searchForm.priceMax) {
+        this.searchAdsCount(this.createFormData(this.searchForm))
+      }
     },
     searchAdsCount(data: any) {
       AdApi.searchAdCount(data).then(response => {
@@ -173,6 +162,37 @@ export default defineComponent({
         duration: 5000
       });
     }
+  },
+  name: 'SearchComponent',
+  data() {
+    return {
+      categories: [],
+      countAds: null,
+      showPriceCard: false,
+      showCitySearch: false,
+      countCategoriesGlobal: null,
+      cites: [],
+      cityShow: '',
+      price: '',
+      searchForm: {
+        city: '',
+        category: '',
+        search: '',
+        priceMin: '',
+        priceMax: '',
+      }
+    }
+  },
+  created() {
+    CategoryApi.getCategories()
+        .then(response => {
+          this.categories = response.data.categories
+          this.countAds = response.data.countAds
+          this.countCategoriesGlobal = response.data.countAds
+        })
+        .catch(() => {
+          this.toastShow('error', 'Erreur serveur')
+        })
   }
 });
 </script>

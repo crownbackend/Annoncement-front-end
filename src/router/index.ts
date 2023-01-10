@@ -22,7 +22,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Ads
   },
   {
-    path: '/annonce/:id',
+    path: '/annonce/:id.html',
     name: 'ad',
     component: Ad
   },

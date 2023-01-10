@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Home from "@/views/Home.vue";
 import Login from "@/views/security/Login.vue";
 import AuthService from "@/service/AuthService";
+import Ads from "@/views/search/Ads.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -13,6 +14,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/connexion',
     name: 'login',
     component: Login
+  },
+  {
+    path: '/recherche',
+    name: 'adsSearch',
+    component: Ads
   },
 ]
 

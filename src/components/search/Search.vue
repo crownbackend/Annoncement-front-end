@@ -68,7 +68,10 @@
             </div>
             <br>
             <div v-if="countAds" class="d-grid gap-2 col-6 mx-auto row h-100 justify-content-center align-items-center">
-              <button class="btn btn-primary" type="button">Rechercher ({{countAds}} résultats)</button>
+              <router-link class="btn btn-primary" :to="{ name: 'adsSearch', query:
+               { category: searchForm.category, search: searchForm.search, city:searchForm.city,
+                priceMin: searchForm.priceMin,priceMax: searchForm.priceMax, searchAds: true }
+              }">Rechercher ({{countAds}} résultats)</router-link>
             </div>
             <div v-if="!countAds" class="d-grid gap-2 col-6 mx-auto row h-100 justify-content-center align-items-center">
               <h2>Aucune annonce n'est disponible dans cette catégorie.</h2>
@@ -79,7 +82,7 @@
     </div>
     <br>
     <div v-if="countAds" class="d-grid gap-2 col-6 mx-auto row h-100 justify-content-center align-items-center">
-      <button class="btn btn-secondary" type="button">Deposé une annonce</button>
+      <router-link class="btn btn-secondary" to="/recherche">Deposé une annonce</router-link>
     </div>
   </div>
 </template>
@@ -91,6 +94,37 @@ import CityApi from "@/service/CityApi";
 import AdApi from "@/service/AdApi";
 
 export default defineComponent({
+  name: 'SearchComponent',
+  data() {
+    return {
+      categories: [],
+      countAds: null,
+      showPriceCard: false,
+      showCitySearch: false,
+      countCategoriesGlobal: null,
+      cites: [],
+      cityShow: '',
+      price: '',
+      searchForm: {
+        city: '',
+        category: '',
+        search: '',
+        priceMin: '',
+        priceMax: '',
+      }
+    }
+  },
+  created() {
+    CategoryApi.getCategories()
+        .then(response => {
+          this.categories = response.data.categories
+          this.countAds = response.data.countAds
+          this.countCategoriesGlobal = response.data.countAds
+        })
+        .catch(() => {
+          this.toastShow('error', 'Erreur serveur')
+        })
+  },
   methods: {
     selectCategory(event: Event) {
       const value = (event.target as HTMLInputElement).value
@@ -154,6 +188,7 @@ export default defineComponent({
       formData.append('priceMax', data.priceMax)
       formData.append('priceMin', data.priceMin)
       formData.append('search', data.search)
+      formData.append('searchAds', 'false')
       return formData
     },
     toastShow(type: string, message: string) {
@@ -163,37 +198,6 @@ export default defineComponent({
       });
     }
   },
-  name: 'SearchComponent',
-  data() {
-    return {
-      categories: [],
-      countAds: null,
-      showPriceCard: false,
-      showCitySearch: false,
-      countCategoriesGlobal: null,
-      cites: [],
-      cityShow: '',
-      price: '',
-      searchForm: {
-        city: '',
-        category: '',
-        search: '',
-        priceMin: '',
-        priceMax: '',
-      }
-    }
-  },
-  created() {
-    CategoryApi.getCategories()
-        .then(response => {
-          this.categories = response.data.categories
-          this.countAds = response.data.countAds
-          this.countCategoriesGlobal = response.data.countAds
-        })
-        .catch(() => {
-          this.toastShow('error', 'Erreur serveur')
-        })
-  }
 });
 </script>
 

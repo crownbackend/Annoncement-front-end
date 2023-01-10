@@ -9,10 +9,10 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active text-bg-primary" aria-current="page" href="#"><i class="bi bi-search"></i>Recherche</a>
+              <a class="nav-link active text-bg-primary" aria-current="page" href="#"><i class="bi bi-search m-1"></i>Recherche</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active text-bg-primary" aria-current="page" href="#"><i class="bi bi-plus-square"></i>Deposer une annonce</a>
+              <a class="nav-link active text-bg-primary" aria-current="page" href="#"><i class="bi bi-plus-square m-1"></i>Déposer une annonce</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle text-bg-primary" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">

@@ -3,6 +3,7 @@ import Home from "@/views/Home.vue";
 import Login from "@/views/security/Login.vue";
 import AuthService from "@/service/AuthService";
 import Ads from "@/views/search/Ads.vue";
+import Ad from "@/views/ad/Ad.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -19,6 +20,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/recherche',
     name: 'adsSearch',
     component: Ads
+  },
+  {
+    path: '/annonce/:id',
+    name: 'ad',
+    component: Ad
   },
 ]
 

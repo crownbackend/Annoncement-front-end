@@ -23,6 +23,11 @@ class AdApi {
         }
         return api.get(url)
     }
+
+    ad(id: any) {
+        const url = this.getBaseUrl() + '/' + id
+        return api.get(url)
+    }
 }
 
 export default new AdApi()

@@ -32,7 +32,7 @@
         <p v-html="ad.description">
         </p>
         <hr>
-        <div id="map"></div>
+        <div id="map" ref="mapElement"></div>
       </div>
       <div class="col-md-4">
         <div class="card" style="width: 20rem;">
@@ -64,9 +64,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import AdApi from "@/service/AdApi";
-import { L } from 'leaflet'
+import L from "leaflet";
 
 export default defineComponent({
   name: 'AdView',
@@ -76,18 +76,22 @@ export default defineComponent({
     }
   },
   mounted() {
-    var map = L.map('map', {
-      center: [51.505, -0.09],
-      zoom: 13
-    });
     AdApi.ad(this.$route.params.id).then(response => {
       this.ad = response.data
     }).catch(err => console.log(err))
+    const map = L.map(this.$refs['mapElement'] as HTMLInputElement).setView([51.959, -8.623], 12);
+    L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+      attribution:
+          '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
   }
 });
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-
+#map {
+  width: 100vw;
+  height: 100vh;
+}
 </style>

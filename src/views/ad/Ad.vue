@@ -32,7 +32,14 @@
         <p v-html="ad.description">
         </p>
         <hr>
-        <div id="map" ref="mapElement"></div>
+        <div id="container">
+          <h4>{{ ad.city.name}} ({{ ad.city.codePostale}})</h4>
+          <button type="button" class="btn btn-primary" @click="showMap">Voir la carte</button>
+          <br>
+          <br>
+          <div id="map" ref="map"></div>
+        </div>
+        <hr>
       </div>
       <div class="col-md-4">
         <div class="card" style="width: 20rem;">
@@ -64,26 +71,37 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import AdApi from "@/service/AdApi";
+import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
+import {LatLng} from "leaflet";
+import {Ad} from "@/model/ad";
+
 
 export default defineComponent({
   name: 'AdView',
   data() {
     return {
-      ad: [],
+      ad: Ad,
     }
   },
   mounted() {
     AdApi.ad(this.$route.params.id).then(response => {
       this.ad = response.data
     }).catch(err => console.log(err))
-    const map = L.map(this.$refs['mapElement'] as HTMLInputElement).setView([51.959, -8.623], 12);
-    L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-      attribution:
-          '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+  },
+  methods: {
+    showMap() {
+      const map = L.map('map', {
+        center: [this.ad.city.lon, this.ad.city.lat],
+        zoom: 13
+      });
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+      L.marker(new LatLng(this.ad.city.lat, this.ad.city.lon)).addTo(map)
+    }
   }
 });
 </script>
@@ -91,7 +109,7 @@ export default defineComponent({
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 #map {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 300px;
 }
 </style>

@@ -1,6 +1,5 @@
 <template>
-  <SearchComponent/>
-  <br>
+
   <div class="" v-if="ads.length !== 0">
     <div class="card mb-3 container" style="max-width: 800px; padding-right: 0px; padding-left: 0px;" :key="key" v-for="(ad, key) in ads">
       <router-link target="_blank" :to="{ name: 'ad', params: { id: ad.id } }">
@@ -46,7 +45,6 @@ import SearchComponent from "@/components/search/Search.vue";
 
 export default defineComponent({
   name: 'AdsView',
-  components: {SearchComponent},
   data() {
     return {
       ads: [],

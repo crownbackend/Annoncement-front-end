@@ -69,7 +69,9 @@
               Annonces : {{ ad.user.ads }}
             </p>
             <div class="d-grid gap-2 col-12 mx-auto">
-              <button class="btn btn-primary" type="button">Message</button>
+              <router-link class="btn btn-primary" :to="{ name: 'reply', params: { id: ad.id } }">
+                Message
+              </router-link>
               <button class="btn btn-outline-secondary" @click="showNumberTelephone" v-if="!showTelephone && ad.telephone" type="button">
                 Voir numéro téléphone
               </button>
@@ -82,7 +84,7 @@
       </div>
     </div>
   </div>
-  <div v-if="!ad">
+  <div v-else>
     <div class="d-flex justify-content-center">
       <div class="spinner-border" role="status">
         <span class="visually-hidden">Loading...</span>

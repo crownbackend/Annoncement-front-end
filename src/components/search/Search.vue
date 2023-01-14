@@ -131,9 +131,10 @@ export default defineComponent({
       const valueNumber = Number(value)
       if(valueNumber === 0) {
         this.countAds = this.countCategoriesGlobal
+      } else {
+        this.searchForm.category = value
+        this.searchAdsCount(this.createFormData(this.searchForm))
       }
-      this.searchForm.category = value
-      this.searchAdsCount(this.createFormData(this.searchForm))
     },
     showPrice() {
       if(!this.showPriceCard) {

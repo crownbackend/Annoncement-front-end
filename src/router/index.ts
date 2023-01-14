@@ -4,6 +4,7 @@ import Login from "@/views/security/Login.vue";
 import AuthService from "@/service/AuthService";
 import Ads from "@/views/search/Ads.vue";
 import Ad from "@/views/ad/Ad.vue";
+import Reply from "@/views/chat/Reply.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -25,6 +26,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/annonce/:id.html',
     name: 'ad',
     component: Ad
+  },
+  {
+    path: '/replay/:id.html',
+    name: 'reply',
+    component: Reply,
+    meta: {requiresAuth: true}
   },
 ]
 

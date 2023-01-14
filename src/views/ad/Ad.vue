@@ -1,5 +1,5 @@
 <template>
-  <div v-if="ad.length !== 0">
+  <div v-if="ad">
     <div class="row">
       <div class="col-md-8">
         <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
@@ -34,8 +34,6 @@
         <hr>
         <div id="container">
           <h4>{{ ad.city.name}} ({{ ad.city.codePostale}})</h4>
-          <button type="button" class="btn btn-primary" @click="showMap">Voir la carte</button>
-          <br>
           <br>
           <div id="map" ref="map"></div>
         </div>
@@ -61,7 +59,7 @@
       </div>
     </div>
   </div>
-  <div v-else>
+  <div v-if="!ad">
     <div class="d-flex justify-content-center">
       <div class="spinner-border" role="status">
         <span class="visually-hidden">Loading...</span>
@@ -71,38 +69,42 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import {defineComponent} from 'vue';
 import AdApi from "@/service/AdApi";
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
 import {LatLng} from "leaflet";
-import {Ad} from "@/model/ad";
+import Ad from "@/model/ad";
 
 
 export default defineComponent({
   name: 'AdView',
   data() {
     return {
-      ad: Ad,
+      ad: {} as Ad,
     }
   },
-  mounted() {
+  beforeCreate() {
     AdApi.ad(this.$route.params.id).then(response => {
       this.ad = response.data
     }).catch(err => console.log(err))
   },
-  methods: {
-    showMap() {
-      const map = L.map('map', {
-        center: [this.ad.city.lon, this.ad.city.lat],
-        zoom: 13
-      });
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map);
-      L.marker(new LatLng(this.ad.city.lat, this.ad.city.lon)).addTo(map)
-    }
-  }
+  mounted() {
+    const myIcon = L.icon({
+      iconUrl: 'http://localhost:8081/pngegg.png',
+      iconSize: [38, 95],
+      iconAnchor: [22, 94],
+      popupAnchor: [-3, -76],
+    });
+    const map = L.map('map', {
+      center: [this.ad.city.lat, this.ad.city.lon],
+      zoom: 13
+    });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    L.marker(new LatLng(this.ad.city.lat, this.ad.city.lon), {icon: myIcon}).addTo(map)
+  },
 });
 </script>
 

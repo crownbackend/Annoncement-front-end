@@ -35,7 +35,27 @@
         <div id="container">
           <h4>{{ ad.city.name}} ({{ ad.city.codePostale}})</h4>
           <br>
-          <div id="map" ref="map"></div>
+          <div id="map"></div>
+        </div>
+        <hr>
+        <div>
+          <h5>Les annonces de {{ ad.user.firstName }} {{ ad.user.lastName }}</h5>
+          <div class="row">
+            <div class="col-md-3" :key="key" v-for="(ad, key) in adsUserLast">
+              <div class="card">
+                <img :src="ad.images[0].name" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h4 class="card-title">{{ ad.name.slice(0, 50) }}</h4>
+                  <h5 class="card-text">{{ ad.price }}</h5>
+                  <div class="form-text">{{ ad.city.name}} ({{ ad.city.codePostale}})</div>
+                  <br>
+                  <router-link target="_blank" :to="{ name: 'ad', params: { id: ad.id } }">
+                    Voir l'annonce
+                  </router-link>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <hr>
       </div>
@@ -46,13 +66,16 @@
             <p class="card-text">
               {{ ad.user.firstName }} {{ ad.user.lastName }}
               <br>
-              Annonces :
-              <br>
-              {{ ad.user.ads }}
+              Annonces : {{ ad.user.ads }}
             </p>
             <div class="d-grid gap-2 col-12 mx-auto">
               <button class="btn btn-primary" type="button">Message</button>
-              <button class="btn btn-outline-secondary" type="button">Voir numéro téléphone</button>
+              <button class="btn btn-outline-secondary" @click="showNumberTelephone" v-if="!showTelephone && ad.telephone" type="button">
+                Voir numéro téléphone
+              </button>
+              <button class="btn btn-outline-secondary" v-if="showTelephone" type="button">
+                {{ ad.telephone }}
+              </button>
             </div>
           </div>
         </div>
@@ -82,6 +105,8 @@ export default defineComponent({
   data() {
     return {
       ad: {} as Ad,
+      showTelephone: false,
+      adsUserLast: [],
     }
   },
   beforeCreate() {
@@ -104,7 +129,16 @@ export default defineComponent({
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
     L.marker(new LatLng(this.ad.city.lat, this.ad.city.lon), {icon: myIcon}).addTo(map)
+
+    AdApi.userAdsLast(this.ad.user.id).then(response => {
+      this.adsUserLast = response.data
+    }).catch(err => console.error(err))
   },
+  methods: {
+    showNumberTelephone() {
+      this.showTelephone = true
+    }
+  }
 });
 </script>
 

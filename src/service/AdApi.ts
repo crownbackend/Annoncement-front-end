@@ -28,6 +28,11 @@ class AdApi {
         const url = this.getBaseUrl() + '/' + id
         return api.get(url)
     }
+
+    userAdsLast(id: any) {
+        const url = this.getBaseUrl() + '/' + id + '/user'
+        return api.get(url)
+    }
 }
 
 export default new AdApi()

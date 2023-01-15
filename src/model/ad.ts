@@ -8,7 +8,7 @@ export default interface Ad {
     price: number;
     description: string;
     telephone: string;
-    createdAt: Date
+    createdAt: string
     city: City;
     category: Category;
     user: User;

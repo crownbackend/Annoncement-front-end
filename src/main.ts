@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -6,7 +6,6 @@ import api from "./service/api"
 import "bootstrap";
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import ToastPlugin from 'vue-toast-notification';
-//import 'vue-toast-notification/dist/theme-default.css';
 import 'vue-toast-notification/dist/theme-sugar.css';
 
 api.interceptors.response.use(

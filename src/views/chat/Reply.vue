@@ -59,17 +59,21 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import AdApi from "@/service/AdApi";
+import Ad from "@/model/ad";
+import mixins from "@/mixins/Mixins";
 
 export default defineComponent({
   name: 'ReplyView',
   data() {
     return {
-      ad: []
+      ad: {} as Ad
     }
   },
+  mixins: [mixins],
   beforeCreate() {
     AdApi.ad(this.$route.params.id).then(response => {
       this.ad = response.data
+      this.ad.createdAt = mixins.methods.formatDate(this.ad.createdAt)
     }).catch(err => console.log(err))
   }
 });

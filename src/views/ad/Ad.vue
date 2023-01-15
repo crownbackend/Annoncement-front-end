@@ -100,6 +100,8 @@ import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
 import {LatLng} from "leaflet";
 import Ad from "@/model/ad";
+import Mixins from '@/mixins/Mixins';
+
 
 
 export default defineComponent({
@@ -111,12 +113,14 @@ export default defineComponent({
       adsUserLast: [],
     }
   },
+  mixins: [Mixins],
   beforeCreate() {
     AdApi.ad(this.$route.params.id).then(response => {
       this.ad = response.data
     }).catch(err => console.log(err))
   },
   mounted() {
+    this.ad.createdAt = Mixins.methods.formatDate(this.ad.createdAt);
     const myIcon = L.icon({
       iconUrl: 'http://localhost:8081/pngegg.png',
       iconSize: [38, 95],
@@ -140,6 +144,7 @@ export default defineComponent({
     showNumberTelephone() {
       this.showTelephone = true
     }
+
   }
 });
 </script>

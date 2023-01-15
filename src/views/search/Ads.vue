@@ -42,6 +42,8 @@
 import { defineComponent } from 'vue';
 import AdApi from "@/service/AdApi";
 import SearchComponent from "@/components/search/Search.vue";
+import Mixins from "@/mixins/Mixins";
+import Ad from "@/model/ad";
 
 export default defineComponent({
   name: 'AdsView',
@@ -51,9 +53,13 @@ export default defineComponent({
       showMoreBtn: true
     }
   },
+  mixins: [Mixins],
   mounted() {
     AdApi.searchAds(this.$route.query).then(response => {
       this.ads = response.data
+      this.ads.map((v: Ad, k) => {
+        v.createdAt = Mixins.methods.formatDate(v.createdAt)
+      })
     }).catch(() => {
       this.toastShow('error', 'Erreur serveur')
     })

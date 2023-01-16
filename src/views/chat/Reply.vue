@@ -1,5 +1,5 @@
 <template>
-  <div v-if="ad.length !== 0">
+  <div v-if="ad && ad.city && ad.images && ad.user">
     <div class="row">
       <div class="col-md-6">
         <div class="card" style="width: 100%;">
@@ -61,8 +61,8 @@ import { defineComponent } from 'vue';
 import AdApi from "@/service/AdApi";
 import Ad from "@/model/ad";
 import mixins from "@/mixins/Mixins";
-import AuthService from "@/service/AuthService";
 import UserApi from "@/service/UserApi";
+import DiscussionApi from "@/service/DiscussionApi";
 
 export default defineComponent({
   name: 'ReplyView',
@@ -84,10 +84,24 @@ export default defineComponent({
   },
   methods: {
     sendMessage() {
-      console.log(this.message)
-      console.log(AuthService.getToken().email)
-      console.log(this.$route.params.id)
-    }
+      const data = {
+        id: this.$route.params.id,
+        message: this.message,
+      }
+      DiscussionApi.create(this.createFormData(data))
+          .then(response => {
+            if(response.data) {
+              this.$router.push({name: 'discussion'})
+            }
+          })
+          .catch(err => console.log(err))
+    },
+    createFormData(data: any) {
+      const formData = new FormData()
+      formData.append('adId', data.id)
+      formData.append('message', data.message)
+      return formData
+    },
   }
 });
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="ad">
+  <div v-if="ad && ad.city && ad.images && ad.user">
     <div class="row">
       <div class="col-md-8">
         <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
@@ -120,25 +120,27 @@ export default defineComponent({
     }).catch(err => console.log(err))
   },
   mounted() {
-    this.ad.createdAt = Mixins.methods.formatDate(this.ad.createdAt);
-    const myIcon = L.icon({
-      iconUrl: 'http://localhost:8081/pngegg.png',
-      iconSize: [38, 95],
-      iconAnchor: [22, 94],
-      popupAnchor: [-3, -76],
-    });
-    const map = L.map('map', {
-      center: [this.ad.city.lat, this.ad.city.lon],
-      zoom: 13
-    });
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-    L.marker(new LatLng(this.ad.city.lat, this.ad.city.lon), {icon: myIcon}).addTo(map)
+    setTimeout(() => {
+      this.ad.createdAt = Mixins.methods.formatDate(this.ad.createdAt);
+      const myIcon = L.icon({
+        iconUrl: 'http://localhost:8081/pngegg.png',
+        iconSize: [38, 95],
+        iconAnchor: [22, 94],
+        popupAnchor: [-3, -76],
+      });
+      const map = L.map('map', {
+        center: [this.ad.city.lat, this.ad.city.lon],
+        zoom: 13
+      });
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+      L.marker(new LatLng(this.ad.city.lat, this.ad.city.lon), {icon: myIcon}).addTo(map)
 
-    AdApi.userAdsLast(this.ad.user.id).then(response => {
-      this.adsUserLast = response.data
-    }).catch(err => console.error(err))
+      AdApi.userAdsLast(this.ad.user.id).then(response => {
+        this.adsUserLast = response.data
+      }).catch(err => console.error(err))
+    }, 2000)
   },
   methods: {
     showNumberTelephone() {

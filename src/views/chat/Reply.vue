@@ -16,10 +16,10 @@
             <h4 class="card-title">Envoyer un message à Mtss {{ ad.user.firstName }} {{ ad.user.lastName }}</h4>
             <div class="mb-3">
               <label for="exampleFormControlTextarea1" class="form-label">Votre message</label>
-              <textarea class="form-control" id="exampleFormControlTextarea1" rows="8">Bonjour votre annonce m'intéresse ! Est-elle toujours disponible ?</textarea>
+              <textarea class="form-control" v-model="message" id="exampleFormControlTextarea1" rows="8"></textarea>
             </div>
             <div class="text-center">
-              <button class="btn btn-primary" type="button">Envoyer</button>
+              <button class="btn btn-primary" @click="sendMessage" type="button">Envoyer</button>
             </div>
           </div>
         </div>
@@ -61,20 +61,33 @@ import { defineComponent } from 'vue';
 import AdApi from "@/service/AdApi";
 import Ad from "@/model/ad";
 import mixins from "@/mixins/Mixins";
+import AuthService from "@/service/AuthService";
+import UserApi from "@/service/UserApi";
 
 export default defineComponent({
   name: 'ReplyView',
   data() {
     return {
-      ad: {} as Ad
+      ad: {} as Ad,
+      message: '',
     }
   },
   mixins: [mixins],
-  beforeCreate() {
+  created() {
+    UserApi.isConnected().then().catch(err => console.error(err))
     AdApi.ad(this.$route.params.id).then(response => {
       this.ad = response.data
       this.ad.createdAt = mixins.methods.formatDate(this.ad.createdAt)
+      const name = this.ad.user.firstName + ' ' + this.ad.user.lastName
+      this.message = `Bonjour ${name} votre annonce est-elle toujours disponible ?`
     }).catch(err => console.log(err))
+  },
+  methods: {
+    sendMessage() {
+      console.log(this.message)
+      console.log(AuthService.getToken().email)
+      console.log(this.$route.params.id)
+    }
   }
 });
 </script>

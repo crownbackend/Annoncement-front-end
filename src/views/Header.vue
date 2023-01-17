@@ -9,10 +9,16 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active text-bg-primary" aria-current="page" href="#"><i class="bi bi-search m-1"></i>Recherche</a>
+              <a class="nav-link text-bg-primary" aria-current="page" href="#"><i class="bi bi-search m-1"></i>Recherche</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active text-bg-primary" aria-current="page" href="#"><i class="bi bi-plus-square m-1"></i>Déposer une annonce</a>
+              <a class="nav-link text-bg-primary" aria-current="page" href="#"><i class="bi bi-plus-square m-1"></i>Déposer une annonce</a>
+            </li>
+            <li class="nav-item" v-if="user">
+              <router-link :to="{name: 'discussion'}" class="nav-link text-bg-primary" aria-current="page" href="#">
+                <i class="bi bi-chat-dots-fill"></i> Messages
+                <span class="badge text-bg-secondary">4</span>
+              </router-link>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle text-bg-primary" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -49,7 +55,7 @@ export default defineComponent({
   data() {
     return {
       user : AuthService.getUser(),
-      email: AuthService.getInfosUser()
+      email: AuthService.getInfosUser().email
     }
   },
   methods: {

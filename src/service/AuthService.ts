@@ -8,8 +8,7 @@ class AuthService {
     }
 
     getInfosUser() {
-        const token = this.getToken()
-        return token.email
+        return this.getToken()
     }
 
     getToken() {

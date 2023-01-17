@@ -9,9 +9,9 @@
 </template>
 
 <style lang="scss">
-$primary: #0B3C5D;
+$primary: #26474E;
 $secondary: #F7941E;
-$success: #5DBCD2;
+$success: #76CDCD;
 $info: #828282;
 
 // Then import Bootstrap

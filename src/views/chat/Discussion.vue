@@ -1,8 +1,8 @@
 <template>
-  <div v-if="discussions !== 0">
+  <div class="container" v-if="discussions !== 0">
     <div class="row">
       <div class="col-md-4">
-        <div class="card mb-3" style="border-left: 3px solid #F7941E;" :key="key" v-for="(discussion, key ) in discussions">
+        <div class="card mb-3 pointer" :class="selectedDiscussion === discussion.id ? 'selected__discussion' : ''" @click="selectDiscussion(discussion)" :key="key" v-for="(discussion, key ) in discussions">
           <div class="row g-0">
             <div class="col-md-4">
               <img src="https://picsum.photos/1000/700" style="height: 100%" class="img-fluid rounded-start" alt="...">
@@ -17,11 +17,8 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-
-      </div>
-      <div class="col-md-4">
-
+      <div class="col-md-8">
+        <MessageComponent :messages="messages"/>
       </div>
     </div>
   </div>
@@ -38,25 +35,45 @@
 import { defineComponent } from 'vue';
 import DiscussionApi from "@/service/DiscussionApi";
 import Mixins from "@/mixins/Mixins";
+import Discussion from "@/model/discussion";
+import Message from "@/model/message";
+import MessageComponent from "@/components/chat/Message.vue";
 
 export default defineComponent({
   name: 'DiscussionView',
+  components: {MessageComponent},
   mixins: [Mixins],
   data() {
     return {
-      discussions: []
+      discussions: [] as Discussion[],
+      messages: [] as Message[],
+      selectedDiscussion: 0,
     }
   },
   created() {
     DiscussionApi.meDiscussion()
         .then(response => {
           this.discussions = response.data
-          this.discussions.map(v => {
-            console.log()
-            v.messages.at(-1)["createdAt"] = Mixins.methods.formatDate(v.messages.at(-1)["createdAt"])
+          this.discussions.map((v: Discussion, k) => {
+            v.messages.map((v: Message, k) => {
+              v.createdAt = Mixins.methods.formatDate(v.createdAt)
+            })
           })
         })
         .catch(err => console.error(err))
+  },
+  methods: {
+    selectDiscussion(discussion: Discussion) {
+      this.selectedDiscussion = discussion.id
+      this.messages = this.discussions.filter(value => value == discussion)[0].messages
+    }
   }
 })
 </script>
+
+<style lang="scss" scoped>
+.selected__discussion {
+  border-left: 3px solid #F7941E;
+  background-color: #f4f6f7
+}
+</style>

@@ -2,7 +2,7 @@
 
   <div class="" v-if="ads.length !== 0">
     <div class="card mb-3 container" style="max-width: 800px; padding-right: 0px; padding-left: 0px;" :key="key" v-for="(ad, key) in ads">
-      <router-link target="_blank" :to="{ name: 'ad', params: { id: ad.id } }">
+      <router-link :to="{ name: 'ad', params: { id: ad.id } }">
         <div class="row g-0">
           <div class="col-md-4">
             <img src="https://picsum.photos/1000/700" class="img-fluid rounded-start" style="height: 100%" alt="...">
@@ -49,7 +49,7 @@ export default defineComponent({
   name: 'AdsView',
   data() {
     return {
-      ads: [],
+      ads: [] as Ad[],
       showMoreBtn: true
     }
   },
@@ -72,7 +72,7 @@ export default defineComponent({
         if(response.data.length === 0) {
           this.showMoreBtn = false
         }
-        this.ads = this.ads.concat(response.data)
+        this.ads = [... response.data]
       }).catch(() => {
         this.toastShow('error', 'Erreur serveur')
       })

@@ -6,7 +6,11 @@
           <div class="bg-light-primary rounded p-2">
             {{ message.content }}
           </div>
-          <div class="text-end">date</div>
+          <div class="text-end">
+            <small class="text-muted p-2">{{ message.createdAt}}</small>
+            <small class="text-muted"><i class="bi bi-check fs-5"></i></small>
+            <small class="text-muted"><i class="bi bi-check-all fs-5" style="color: tomato"></i></small>
+          </div>
         </div>
       </div>
       <br>
@@ -15,13 +19,17 @@
           <div class="bg-light-secondary rounded p-2">
             {{ message.content }}
           </div>
-          <div>date</div>
+          <div>
+            <small class="text-muted p-2">{{ message.createdAt}}</small>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
-
+  <div class="mb-3">
+    <label for="exampleFormControlTextarea1" class="form-label">Example textarea</label>
+    <textarea class="form-control" placeholder="" style="width: 100%" id="exampleFormControlTextarea1" rows="3"></textarea>
+  </div>
 </template>
 
 <script lang="ts">
@@ -56,9 +64,9 @@ export default defineComponent({
   color: white;
 }
 .scroller {
-  width: 800px;
-  height: 430px;
+  height: 700px;
   overflow-y: scroll;
+  overflow-x: hidden;
   scrollbar-color: rebeccapurple green;
   scrollbar-width: thin;
 }

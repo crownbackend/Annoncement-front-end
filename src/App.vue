@@ -20,6 +20,14 @@ $info: #828282;
 .pointer {
   cursor: pointer;
 }
+.bg-light-primary {
+  background-color: #76CDCD;
+  color: white;
+}
+.bg-light-secondary {
+  background-color: #F27438;
+  color: white;
+}
 </style>
 <script setup lang="ts">
 import HeaderView from "@/views/Header.vue";

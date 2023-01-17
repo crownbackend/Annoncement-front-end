@@ -2,17 +2,22 @@
   <div class="container" v-if="discussions !== 0">
     <div class="row">
       <div class="col-md-4">
-        <div class="card mb-3 pointer" :class="selectedDiscussion === discussion.id ? 'selected__discussion' : ''" @click="selectDiscussion(discussion)" :key="key" v-for="(discussion, key ) in discussions">
-          <div class="row g-0">
-            <div class="col-md-4">
-              <img src="https://picsum.photos/1000/700" style="height: 100%" class="img-fluid rounded-start" alt="...">
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title">{{ discussion.ad.name.slice(0, 20) }}...</h5>
-                <p class="card-text">{{ discussion.messages.at(-1).content.slice(0, 30) }}...</p>
-                <p class="card-text"><small class="text-muted">{{ discussion.messages.at(-1).createdAt }}</small></p>
+        <div class="scroller">
+          <div class="card mb-3" :class="selectedDiscussion === discussion.id ? 'selected__discussion' : ''"  :key="key" v-for="(discussion, key ) in discussions">
+            <div class="row g-0 pointer" @click="selectDiscussion(discussion)">
+              <div class="col-md-4">
+                <img src="https://picsum.photos/1000/700" style="height: 100%" class="img-fluid rounded-start" alt="...">
               </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title">{{ discussion.ad.name.slice(0, 20) }}...</h5>
+                  <p class="card-text">{{ discussion.messages.at(-1).content.slice(0, 30) }}...</p>
+                  <p class="card-text"><small class="text-muted">{{ discussion.messages.at(-1).createdAt }}</small></p>
+                </div>
+              </div>
+            </div>
+            <div class="text-end pointer position-absolute bottom-0 end-0 fs-4 mb-0">
+              <i class="bi bi-archive-fill" style="color: tomato"></i>
             </div>
           </div>
         </div>
@@ -73,7 +78,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .selected__discussion {
-  border-left: 3px solid #F7941E;
+  border-left: 5px solid #F7941E;
   background-color: #f4f6f7
+}
+.scroller {
+  height: 800px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scrollbar-color: rebeccapurple green;
+  scrollbar-width: thin;
 }
 </style>

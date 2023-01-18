@@ -17,13 +17,13 @@
               </div>
             </div>
             <div class="text-end pointer position-absolute bottom-0 end-0 fs-4 mb-0">
-              <i class="bi bi-archive-fill" style="color: tomato"></i>
+              <i class="bi bi-archive-fill" @click="deleteDiscussion(discussion.id)" style="color: tomato"></i>
             </div>
           </div>
         </div>
       </div>
       <div class="col-md-8">
-        <MessageComponent :messages="messages"/>
+        <MessageComponent :ad="ad" :messages="messages"/>
       </div>
     </div>
   </div>
@@ -43,6 +43,7 @@ import Mixins from "@/mixins/Mixins";
 import Discussion from "@/model/discussion";
 import Message from "@/model/message";
 import MessageComponent from "@/components/chat/Message.vue";
+import Ad from "@/model/ad";
 
 export default defineComponent({
   name: 'DiscussionView',
@@ -52,10 +53,22 @@ export default defineComponent({
     return {
       discussions: [] as Discussion[],
       messages: [] as Message[],
+      ad: {} as Ad,
       selectedDiscussion: 0,
+      socket: new WebSocket("ws://localhost:3001")
     }
   },
   created() {
+    this.socket.onopen = (event) => {
+      console.log(event)
+      this.socket.send('hello server')
+      console.log("Successfully connected to the echo websocket server...")
+    }
+
+    this.socket.addEventListener('message', (event) => {
+      console.log('Message from server ', event.data);
+    });
+
     DiscussionApi.meDiscussion()
         .then(response => {
           this.discussions = response.data
@@ -64,6 +77,9 @@ export default defineComponent({
               v.createdAt = Mixins.methods.formatDate(v.createdAt)
             })
           })
+          this.selectedDiscussion = this.discussions[0].id
+          this.ad = this.discussions[0].ad
+          this.messages = this.discussions.filter(value => value == this.discussions[0])[0].messages
         })
         .catch(err => console.error(err))
   },
@@ -71,6 +87,20 @@ export default defineComponent({
     selectDiscussion(discussion: Discussion) {
       this.selectedDiscussion = discussion.id
       this.messages = this.discussions.filter(value => value == discussion)[0].messages
+      this.ad = discussion.ad
+    },
+    deleteDiscussion(id: number) {
+      if(confirm('Etes vous sur de supprimer cette conversation ?')) {
+        DiscussionApi.delete(id)
+            .then(response => {
+              this.discussions = response.data
+              this.discussions.map((v: Discussion, k) => {
+                v.messages.map((v: Message, k) => {
+                  v.createdAt = Mixins.methods.formatDate(v.createdAt)
+                })
+              })
+            }).catch(err => console.error(err))
+      }
     }
   }
 })

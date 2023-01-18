@@ -29,6 +29,15 @@ class DiscussionApi {
             },
         } )
     }
+
+    delete(id: number) {
+        const url = this.getBaseUrl() + '/delete/' + id
+        return axios.delete(url, {
+            headers: {
+                'Authorization': 'Bearer ' + this.getToken(),
+            },
+        } )
+    }
 }
 
 export default new DiscussionApi()

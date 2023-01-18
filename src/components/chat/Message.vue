@@ -1,5 +1,6 @@
 <template>
   <div class="scroller">
+    <h3>{{ ad.name }}</h3>
     <div :key="key" v-for="(message, key) in messages">
       <div class="row" v-if="message.senderId === authUser.id">
         <div class="col-4 offset-8">
@@ -8,8 +9,8 @@
           </div>
           <div class="text-end">
             <small class="text-muted p-2">{{ message.createdAt}}</small>
-            <small class="text-muted"><i class="bi bi-check fs-5"></i></small>
-            <small class="text-muted"><i class="bi bi-check-all fs-5" style="color: tomato"></i></small>
+            <small class="text-muted" v-if="!message.readAt"><i class="bi bi-check fs-5"></i></small>
+            <small class="text-muted" v-if="message.readAt" :title="'Message lu à' + message.readAt"><i :title="'Message lu à' + message.readAt" class="bi bi-check-all fs-5" style="color: tomato"></i></small>
           </div>
         </div>
       </div>
@@ -27,8 +28,7 @@
     </div>
   </div>
   <div class="mb-3">
-    <label for="exampleFormControlTextarea1" class="form-label">Example textarea</label>
-    <textarea class="form-control" placeholder="" style="width: 100%" id="exampleFormControlTextarea1" rows="3"></textarea>
+    <textarea class="form-control" placeholder="Écrivez votre message" style="width: 100%" id="exampleFormControlTextarea1" rows="3"></textarea>
   </div>
 </template>
 
@@ -36,6 +36,7 @@
 import {defineComponent, PropType} from 'vue';
 import Message from "@/model/message";
 import AuthService from "@/service/AuthService";
+import Ad from "@/model/ad";
 
 
 export default defineComponent({
@@ -43,6 +44,10 @@ export default defineComponent({
   props: {
     messages: {
       type: Object as PropType<Message>,
+      required: true
+    },
+    ad: {
+      type: Object as PropType<Ad>,
       required: true
     }
   },

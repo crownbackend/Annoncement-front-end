@@ -28,7 +28,7 @@
     </div>
   </div>
   <div class="mb-3">
-    <textarea class="form-control" placeholder="Écrivez votre message" style="width: 100%" id="exampleFormControlTextarea1" rows="3"></textarea>
+    <textarea class="form-control" @focus="userShowMessage" placeholder="Écrivez votre message" style="width: 100%" id="exampleFormControlTextarea1" rows="3"></textarea>
   </div>
 </template>
 
@@ -37,25 +37,54 @@ import {defineComponent, PropType} from 'vue';
 import Message from "@/model/message";
 import AuthService from "@/service/AuthService";
 import Ad from "@/model/ad";
+import MessageApi from "@/service/MessageApi";
+import Discussion from "@/model/discussion";
 
 
 export default defineComponent({
   name: 'MessageComponent',
   props: {
     messages: {
-      type: Object as PropType<Message>,
+      type: Object as PropType<Message[]>,
+      required: true
+    },
+    discussions: {
+      type: Object as PropType<Discussion[]>,
       required: true
     },
     ad: {
       type: Object as PropType<Ad>,
       required: true
-    }
+    },
   },
   data() {
     return {
-      authUser: AuthService.getInfosUser()
+      authUser: AuthService.getInfosUser(),
+      socket: new WebSocket("ws://localhost:3001"),
     }
-  }
+  },
+  mounted() {
+
+    this.socket.onopen = () => {
+
+      console.log("Successfully connected to the echo websocket server on message component")
+    }
+  },
+  methods: {
+    userShowMessage() {
+      if(this.messages[this.messages.length -1].senderId == this.authUser.id) {
+        this.socket.send('messageViewByUser' + this.messages[this.messages.length -1].senderId)
+      } else if(this.messages[this.messages.length -2].senderId == this.authUser.id) {
+        this.socket.send('messageViewByUser' + this.messages[this.messages.length -2].senderId)
+      }
+      this.socket.onmessage = (event) => {
+        if(event.data == this.authUser) {
+          console.log(event.data)
+        }
+      }
+    }
+  },
+
 })
 </script>
 

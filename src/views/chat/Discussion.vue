@@ -23,7 +23,7 @@
         </div>
       </div>
       <div class="col-md-8">
-        <MessageComponent :ad="ad" :messages="messages"/>
+        <MessageComponent :discussions="discussions" :ad="ad" :messages="messages"/>
       </div>
     </div>
   </div>
@@ -55,20 +55,9 @@ export default defineComponent({
       messages: [] as Message[],
       ad: {} as Ad,
       selectedDiscussion: 0,
-      socket: new WebSocket("ws://localhost:3001")
     }
   },
   created() {
-    this.socket.onopen = (event) => {
-      console.log(event)
-      this.socket.send('hello server')
-      console.log("Successfully connected to the echo websocket server...")
-    }
-
-    this.socket.addEventListener('message', (event) => {
-      console.log('Message from server ', event.data);
-    });
-
     DiscussionApi.meDiscussion()
         .then(response => {
           this.discussions = response.data

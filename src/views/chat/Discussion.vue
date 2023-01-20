@@ -1,5 +1,5 @@
 <template>
-  <div class="container" v-if="discussions !== 0">
+  <div class="container" v-if="discussions">
     <div class="row">
       <div class="col-md-4">
         <div class="scroller">
@@ -23,7 +23,7 @@
         </div>
       </div>
       <div class="col-md-8">
-        <MessageComponent :discussions="discussions" :ad="ad" :messages="messages"/>
+        <MessageComponent @updated="val => getUpdateDiscussion(val)" :discussions="discussions" :ad="ad" :messages="messages"/>
       </div>
     </div>
   </div>
@@ -71,6 +71,7 @@ export default defineComponent({
           this.messages = this.discussions.filter(value => value == this.discussions[0])[0].messages
         })
         .catch(err => console.error(err))
+
   },
   methods: {
     selectDiscussion(discussion: Discussion) {
@@ -90,6 +91,10 @@ export default defineComponent({
               })
             }).catch(err => console.error(err))
       }
+    },
+    getUpdateDiscussion(val: Discussion[]) {
+      console.log(val)
+      this.discussions = val
     }
   }
 })

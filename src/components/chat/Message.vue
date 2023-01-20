@@ -17,8 +17,7 @@
       <br>
       <div class="row" v-if="message.senderId !== authUser.id">
         <div class="col-4">
-          <div class="bg-light-secondary rounded p-2">
-            {{ message.content }}
+          <div v-html="message.content" class="bg-light-secondary rounded p-2">
           </div>
           <div>
             <small class="text-muted p-2">{{ message.createdAt}}</small>
@@ -43,6 +42,7 @@ import Discussion from "@/model/discussion";
 
 export default defineComponent({
   name: 'MessageComponent',
+  emits: ['updated'],
   props: {
     messages: {
       type: Object as PropType<Message[]>,
@@ -78,8 +78,26 @@ export default defineComponent({
         this.socket.send('messageViewByUser' + this.messages[this.messages.length -2].senderId)
       }
       this.socket.onmessage = (event) => {
-        if(event.data == this.authUser) {
-          console.log(event.data)
+        if('messageViewByUser' + this.messages[this.messages.length -1].senderId == 'messageViewByUser' + this.authUser.id) {
+          const id = {
+            id: this.messages[this.messages.length -1].id
+          }
+          MessageApi.readMessage(id)
+              .then(response => {
+                console.log(response)
+                this.$emit('updated', response.data)
+              })
+              .catch(err => console.error(err))
+        } else if('messageViewByUser' + this.messages[this.messages.length -2].senderId == 'messageViewByUser' + this.authUser.id) {
+          const id = {
+            id: this.messages[this.messages.length -2].id
+          }
+          MessageApi.readMessage(id)
+              .then(response => {
+                console.log(response)
+                this.$emit('updated', response.data)
+              })
+              .catch(err => console.error(err))
         }
       }
     }

@@ -42,7 +42,6 @@ import Discussion from "@/model/discussion";
 
 export default defineComponent({
   name: 'MessageComponent',
-  emits: ['updated'],
   props: {
     messages: {
       type: Object as PropType<Message[]>,
@@ -84,8 +83,10 @@ export default defineComponent({
           }
           MessageApi.readMessage(id)
               .then(response => {
-                console.log(response)
-                this.$emit('updated', response.data)
+                if(response.data !== 'read') {
+                  console.log(response)
+                  this.$emit('update:discussion', response.data)
+                }
               })
               .catch(err => console.error(err))
         } else if('messageViewByUser' + this.messages[this.messages.length -2].senderId == 'messageViewByUser' + this.authUser.id) {
@@ -94,8 +95,10 @@ export default defineComponent({
           }
           MessageApi.readMessage(id)
               .then(response => {
-                console.log(response)
-                this.$emit('updated', response.data)
+                if(response.data !== 'read') {
+                  console.log(response)
+                  this.$emit('update:discussion', response.data)
+                }
               })
               .catch(err => console.error(err))
         }

@@ -23,7 +23,7 @@
         </div>
       </div>
       <div class="col-md-8">
-        <MessageComponent @updated="val => getUpdateDiscussion(val)" :discussions="discussions" :ad="ad" :messages="messages"/>
+        <MessageComponent @update:discussion="updateDiscussion" :discussions="discussions" :ad="ad" :messages="messages"/>
       </div>
     </div>
   </div>
@@ -92,9 +92,14 @@ export default defineComponent({
             }).catch(err => console.error(err))
       }
     },
-    getUpdateDiscussion(val: Discussion[]) {
-      console.log(val)
-      this.discussions = val
+    updateDiscussion(discussions: Discussion[]) {
+      console.log(discussions)
+      this.discussions = discussions
+      this.discussions.map((v: Discussion, k) => {
+        v.messages.map((v: Message, k) => {
+          v.createdAt = Mixins.methods.formatDate(v.createdAt)
+        })
+      })
     }
   }
 })
